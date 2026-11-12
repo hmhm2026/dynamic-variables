@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Random Variables in Postman</title>
+  <meta name="description" content="A simple guide to Postman Dynamic Variables: what they are, the most common ones, and how to reuse the same random value across requests.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <div class="shell">
+    <aside class="rail">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">{ }</span>
+        <p class="rail-title">Random Variables in Postman</p>
+      </div>
+      <nav aria-label="Guide sections">
+        <ul class="rail-nav">
+          <li><a href="#what">What is it</a></li>
+          <li><a href="#why">Why use them</a></li>
+          <li><a href="#variables">Common variables</a></li>
+          <li><a href="#body">Body example</a></li>
+          <li><a href="#url">URL example</a></li>
+          <li><a href="#reuse">Reusing a value</a></li>
+          <li><a href="#tips">Quick tips</a></li>
+          <li><a href="#right-way">The right way</a></li>
+          <li><a href="#best-practices">Best practices</a></li>
+          <li><a href="#tricks">Tips and tricks</a></li>
+          <li><a href="#summary">Summary</a></li>
+        </ul>
+      </nav>
+
+      <div class="credit credit-rail">
+        <p>this file created by : Ibrahim Khamiss</p>
+        <p>whatsApp : <a href="https://wa.me/201014778296">+201014778296</a></p>
+      </div>
+    </aside>
+
+    <main id="main" class="main">
+
+      <!-- Hero -->
+      <header class="hero">
+        <img class="hero-logo" src="postman.png" alt="Postman logo" width="144" height="144">
+        <h1>Random Variables in Postman</h1>
+        <p class="lead">Simple guide. Test data that changes itself every time you click Send.</p>
+
+        <div class="stage" id="stage">
+          <div class="bar">
+            <span class="method">POST</span>
+            <span class="bar-url">https://api.example.com/users</span>
+            <button type="button" class="btn btn-send" id="stage-send">Send</button>
+          </div>
+
+          <div class="chips" role="group" aria-label="Choose a dynamic variable">
+            <button type="button" class="chip" data-pick="email" aria-pressed="true">{{$randomEmail}}</button>
+            <button type="button" class="chip" data-pick="name" aria-pressed="false">{{$randomFullName}}</button>
+            <button type="button" class="chip" data-pick="age" aria-pressed="false">{{$randomInt}}</button>
+          </div>
+
+          <div class="panes">
+            <div class="pane">
+              <h2 class="pane-title">Body you write</h2>
+              <pre class="pane-code" id="stage-template"></pre>
+            </div>
+            <div class="pane">
+              <h2 class="pane-title">Body Postman sends</h2>
+              <pre class="pane-code pane-result" id="stage-result" aria-live="polite" aria-atomic="true"></pre>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- What -->
+      <section class="section" id="what" aria-labelledby="what-h">
+        <h2 id="what-h">What is a Random Variable?</h2>
+        <p>In Postman, they are officially called <strong>Dynamic Variables</strong>. They generate a new random value every time you click <strong>Send</strong>, so you don't have to type test data by hand. They are written inside double curly braces and start with a <code>$</code> sign:</p>
+        <figure class="code"><pre><code>{{$randomEmail}}</code></pre></figure>
+      </section>
+
+      <!-- Why -->
+      <section class="section" id="why" aria-labelledby="why-h">
+        <h2 id="why-h">Why use them?</h2>
+        <ul class="plain">
+          <li>To <strong>Create User / Register</strong> without the email or username repeating (avoids "already exists" errors).</li>
+          <li>To test with different data on every run.</li>
+          <li>To fill POST and PUT bodies quickly.</li>
+        </ul>
+      </section>
+
+      <!-- Variables -->
+      <section class="section" id="variables" aria-labelledby="variables-h">
+        <h2 id="variables-h">Most Common Dynamic Variables</h2>
+        <p>Select any variable to copy it. The samples are generated live in your browser.</p>
+
+        <div class="table-tools">
+          <label class="search">
+            <span class="sr-only">Filter variables</span>
+            <input type="search" id="filter" placeholder="Filter variables, for example email" autocomplete="off">
+          </label>
+          <button type="button" class="btn btn-quiet" id="reroll">Generate new samples</button>
+        </div>
+
+        <table class="vars" id="vars">
+          <thead>
+            <tr>
+              <th scope="col">Variable</th>
+              <th scope="col">What it generates</th>
+              <th scope="col">Live sample</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td data-label="Variable"><button type="button" class="token" data-copy="{{$timestamp}}">{{$timestamp}}</button></td>
+              <td data-label="Generates">Current time in seconds</td>
+              <td data-label="Sample" class="sample" data-sample="timestamp"></td>
+            </tr>
+            <tr>
+              <td data-label="Variable"><button type="button" class="token" data-copy="{{$isoTimestamp}}">{{$isoTimestamp}}</button></td>
+              <td data-label="Generates">Current time in ISO format</td>
+              <td data-label="Sample" class="sample" data-sample="isoTimestamp"></td>
+            </tr>
+            <tr>
+              <td data-label="Variable"><button type="button" class="token" data-copy="{{$randomInt}}">{{$randomInt}}</button></td>
+              <td data-label="Generates">Number from 0 to 1000</td>
+              <td data-label="Sample" class="sample" data-sample="randomInt"></td>
+            </tr>
+            <tr>
+              <td data-label="Variable"><button type="button" class="token" data-copy="{{$randomAlphaNumeric}}">{{$randomAlphaNumeric}}</button></td>
+              <td data-label="Generates">One letter or digit</td>
+              <td data-label="Sample" class="sample" data-sample="randomAlphaNumeric"></td>
+            </tr>
+            <tr>
+              <td data-label="Variable"><button type="button" class="token" data-copy="{{$randomFirstName}}">{{$randomFirstName}}</button></td>
+              <td data-label="Generates">First name</td>
+              <td data-label="Sample" class="sample" data-sample="randomFirstName"></td>
+            </tr>
+            <tr>
+              <td data-label="Variable"><button type="button" class="token" data-copy="{{$randomLastName}}">{{$randomLastName}}</button></td>
+              <td data-label="Generates">Last name</td>
+              <td data-label="Sample" class="sample" data-sample="randomLastName"></td>
+            </tr>
+            <tr>
+              <td data-label="Variable"><button type="button" class="token" data-copy="{{$randomFullName}}">{{$randomFullName}}</button></td>
+              <td data-label="Generates">Full name</td>
+              <td data-label="Sample" class="sample" data-sample="randomFullName"></td>
+            </tr>
+            <tr>
+              <td data-label="Variable"><button type="button" class="token" data-copy="{{$randomEmail}}">{{$randomEmail}}</button></td>
+              <td data-label="Generates">Email address</td>
+              <td data-label="Sample" class="sample" data-sample="randomEmail"></td>
+            </tr>
+            <tr>
+              <td data-label="Variable"><button type="button" class="token" data-copy="{{$randomUserName}}">{{$randomUserName}}</button></td>
+              <td data-label="Generates">Username</td>
+              <td data-label="Sample" class="sample" data-sample="randomUserName"></td>
+            </tr>
+            <tr>
+              <td data-label="Variable"><button type="button" class="token" data-copy="{{$randomPassword}}">{{$randomPassword}}</button></td>
+              <td data-label="Generates">Password</td>
+              <td data-label="Sample" class="sample" data-sample="randomPassword"></td>
+            </tr>
+            <tr>
+              <td data-label="Variable"><button type="button" class="token" data-copy="{{$randomPhoneNumber}}">{{$randomPhoneNumber}}</button></td>
+              <td data-label="Generates">Phone number</td>
+              <td data-label="Sample" class="sample" data-sample="randomPhoneNumber"></td>
+            </tr>
+            <tr>
+              <td data-label="Variable"><button type="button" class="token" data-copy="{{$randomCity}}">{{$randomCity}}</button></td>
+              <td data-label="Generates">City</td>
+              <td data-label="Sample" class="sample" data-sample="randomCity"></td>
+            </tr>
+            <tr>
+              <td data-label="Variable"><button type="button" class="token" data-copy="{{$randomCountry}}">{{$randomCountry}}</button></td>
+              <td data-label="Generates">Country</td>
+              <td data-label="Sample" class="sample" data-sample="randomCountry"></td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="empty" id="empty" hidden>No variable matches that filter. Clear it to see all variables.</p>
+
+        <blockquote class="note">These are the commonly used ones. The full list is in the Postman documentation under <strong>Dynamic variables</strong>.</blockquote>
+      </section>
+
+      <!-- Example 1 -->
+      <section class="section" id="body" aria-labelledby="body-h">
+        <h2 id="body-h">Example 1: Using them in the Body</h2>
+        <p>Go to the <strong>Body</strong> tab &gt; <strong>raw</strong> &gt; <strong>JSON</strong>:</p>
+        <figure class="code" data-lang="json"><pre><code id="ex1">{
+  "name": "{{$randomFullName}}",
+  "email": "{{$randomEmail}}",
+  "password": "{{$randomPassword}}",
+  "phone": "{{$randomPhoneNumber}}",
+  "age": {{$randomInt}}
+}</code></pre></figure>
+        <p>New values are sent on every <strong>Send</strong>.</p>
+        <div class="runner">
+          <button type="button" class="btn btn-send" data-send="#ex1" data-out="#ex1-out">Send</button>
+          <figure class="code code-out" data-lang="json"><pre><code id="ex1-out" aria-live="polite">Click Send to see the values Postman would send.</code></pre></figure>
+        </div>
+      </section>
+
+      <!-- Example 2 -->
+      <section class="section" id="url" aria-labelledby="url-h">
+        <h2 id="url-h">Example 2: Using them in the URL or Params</h2>
+        <figure class="code"><pre><code id="ex2">https://api.example.com/users/{{$randomInt}}</code></pre></figure>
+        <div class="runner">
+          <button type="button" class="btn btn-send" data-send="#ex2" data-out="#ex2-out">Send</button>
+          <figure class="code code-out"><pre><code id="ex2-out" aria-live="polite">Click Send to see the URL Postman would call.</code></pre></figure>
+        </div>
+      </section>
+
+      <!-- Reuse -->
+      <section class="section" id="reuse" aria-labelledby="reuse-h">
+        <h2 id="reuse-h">Important Problem: Reusing the Same Value in Multiple Places</h2>
+        <p>Every <code>{{$randomEmail}}</code> generates a new value, so if you write it twice you get two different emails. The fix: generate the value once in a <strong>Pre-request Script</strong> and store it in a variable.</p>
+
+        <div class="compare" id="compare">
+          <fieldset class="modes">
+            <legend class="sr-only">How the email is written</legend>
+            <label class="mode"><input type="radio" name="mode" value="twice" checked><span>Write {{$randomEmail}} in both requests</span></label>
+            <label class="mode"><input type="radio" name="mode" value="store"><span>Store it once with a script</span></label>
+          </fieldset>
+          <button type="button" class="btn btn-send" id="compare-send">Send Register, then Login</button>
+          <dl class="results" aria-live="polite">
+            <div class="result-row"><dt>Register body</dt><dd id="res-register">&nbsp;</dd></div>
+            <div class="result-row"><dt>Login body</dt><dd id="res-login">&nbsp;</dd></div>
+          </dl>
+          <p class="verdict" id="verdict" data-state="idle">Pick a way to write the email, then click Send.</p>
+        </div>
+
+        <figure class="code"><pre><code>// Pre-request Script
+const email = pm.variables.replaceIn("{{$randomEmail}}");
+pm.collectionVariables.set("userEmail", email);</code></pre></figure>
+
+        <p>Then in the Body:</p>
+        <figure class="code" data-lang="json"><pre><code>{
+  "email": "{{userEmail}}"
+}</code></pre></figure>
+
+        <p>Now you can use <code>{{userEmail}}</code> in Register and again in Login with the same value, or assert on it in the <strong>Tests</strong> tab:</p>
+        <figure class="code"><pre><code>pm.test("Email matches", function () {
+    const res = pm.response.json();
+    pm.expect(res.email).to.eql(pm.collectionVariables.get("userEmail"));
+});</code></pre></figure>
+      </section>
+
+      <!-- Tips -->
+      <section class="section" id="tips" aria-labelledby="tips-h">
+        <h2 id="tips-h">Quick Tips</h2>
+        <ol class="plain">
+          <li>Use <code>{{$randomEmail}}</code> in Register requests to avoid duplicate emails.</li>
+          <li>If you need the same value across several requests, store it in a variable using a script.</li>
+          <li>Random values make bugs harder to reproduce, so store the value (or print it with <code>console.log</code>) to be able to repeat the same case.</li>
+        </ol>
+      </section>
+
+      <!-- Right way -->
+      <section class="section" id="right-way" aria-labelledby="right-way-h">
+        <h2 id="right-way-h">Which way should I use them?</h2>
+        <p>Choose by what you need the value for. There is no single way that fits every request.</p>
+
+        <table class="vars vars-guide">
+          <thead>
+            <tr>
+              <th scope="col">If you need</th>
+              <th scope="col">Do this</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td data-label="Need">A value once, in one place (a new name or email for one request)</td>
+              <td data-label="Do this">Write the dynamic variable directly, for example <code>{{$randomEmail}}</code>.</td>
+            </tr>
+            <tr>
+              <td data-label="Need">The same value in more than one place (Register then Login, or an assertion)</td>
+              <td data-label="Do this">Generate it once in a <strong>Pre-request Script</strong> and store it in a variable.</td>
+            </tr>
+            <tr>
+              <td data-label="Need">An exact value (an invalid email, an empty field, a boundary number)</td>
+              <td data-label="Do this">Use fixed data. Do not use random values for negative or boundary tests.</td>
+            </tr>
+            <tr>
+              <td data-label="Need">A value the server creates (an ID or a token)</td>
+              <td data-label="Do this">Save it from the response in the <strong>Tests</strong> tab, then reuse it in the next requests.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p class="after-table">A complete flow that follows these rules. First, the Register request. In its <strong>Pre-request Script</strong>, build one unique email and store it:</p>
+        <figure class="code"><pre><code>// Register: Pre-request Script
+const email = pm.variables.replaceIn("qa_{{$timestamp}}_{{$randomInt}}@example.com");
+pm.collectionVariables.set("userEmail", email);
+console.log("Test email:", email);</code></pre></figure>
+
+        <p>In the Body, use the stored value:</p>
+        <figure class="code" data-lang="json"><pre><code>{
+  "name": "{{$randomFullName}}",
+  "email": "{{userEmail}}"
+}</code></pre></figure>
+
+        <p>In the <strong>Tests</strong> tab, check the result and save the ID the server returns (adjust <code>id</code> to your API's response):</p>
+        <figure class="code"><pre><code>// Register: Tests
+pm.test("User created", function () {
+    pm.response.to.have.status(201);
+});
+
+const id = pm.response.json().id;
+pm.collectionVariables.set("userId", id);</code></pre></figure>
+
+        <p>Every request after that reuses the stored values, for example:</p>
+        <figure class="code"><pre><code>https://api.example.com/users/{{userId}}</code></pre></figure>
+      </section>
+
+      <!-- Best practices -->
+      <section class="section" id="best-practices" aria-labelledby="best-practices-h">
+        <h2 id="best-practices-h">Best Practices</h2>
+        <ol class="plain">
+          <li><strong>Test on a test or staging environment.</strong> Random data creates real records, so never run it against production.</li>
+          <li><strong>Prefix your test data.</strong> A value like <code>qa_{{$randomUserName}}</code> makes your records easy to find and delete later.</li>
+          <li><strong>Make values unique on purpose.</strong> <code>{{$randomInt}}</code> only gives a number from 0 to 1000, so repeats can happen. Combine it with <code>{{$timestamp}}</code>, as in <code>qa_{{$timestamp}}_{{$randomInt}}@example.com</code>.</li>
+          <li><strong>Check the API's validation rules.</strong> A random password or phone number may be rejected if the API expects a specific format, for example an uppercase letter and a symbol. In that case, build the value from fixed parts.</li>
+          <li><strong>Keep fixed data for negative and boundary tests.</strong> Random values are for the "any valid value" cases only.</li>
+          <li><strong>Store generated values in the smallest scope that works.</strong> Use <code>pm.variables.set</code> for a single run, <code>pm.collectionVariables.set</code> for a flow across requests, and <code>pm.environment.set</code> when the value depends on the environment.</li>
+          <li><strong>Log what you generate.</strong> Print it with <code>console.log</code> so you can repeat a failed case with the same data.</li>
+          <li><strong>Clean up after the run.</strong> End the flow with a DELETE request that uses the stored ID.</li>
+        </ol>
+      </section>
+
+      <!-- Tips and tricks -->
+      <section class="section" id="tricks" aria-labelledby="tricks-h">
+        <h2 id="tricks-h">Tips and Tricks</h2>
+        <ul class="plain">
+          <li><strong>See the real values.</strong> Open the <strong>Console</strong> at the bottom of Postman. It shows each request after the variables are replaced.</li>
+          <li><strong>Watch for typos.</strong> A misspelled name is not replaced, so the text is sent as it is. If you see <code>{{$randomEmial}}</code> in the Console, fix the name.</li>
+          <li><strong>Quotes in JSON.</strong> Put quotes around text values and leave them off numbers: <code>"name": "{{$randomFullName}}"</code> and <code>"age": {{$randomInt}}</code>.</li>
+          <li><strong>Mix text and variables.</strong> Several can sit in one value: <code>Test {{$randomFullName}}</code> or <code>user_{{$randomInt}}@mail.com</code>.</li>
+          <li><strong>Use them anywhere in the request.</strong> They work in the URL, Params, Headers and Body, not only in the Body.</li>
+          <li><strong>In scripts, use <code>pm.variables.replaceIn()</code>.</strong> Writing <code>{{$randomEmail}}</code> inside script code does not resolve by itself. Pass it as text to <code>replaceIn</code>, as in the examples above.</li>
+          <li><strong>Run the same request many times.</strong> Use the <strong>Collection Runner</strong> and set <strong>Iterations</strong>. New values are generated on every iteration.</li>
+        </ul>
+      </section>
+
+      <!-- Summary -->
+      <section class="section" id="summary" aria-labelledby="summary-h">
+        <h2 id="summary-h">Summary</h2>
+        <ul class="plain">
+          <li><strong>Dynamic Variables</strong> = ready-made random values that start with <code>$</code>.</li>
+          <li>They are regenerated on every Send.</li>
+          <li>To keep a value fixed: <code>pm.variables.replaceIn()</code> + <code>pm.collectionVariables.set()</code>.</li>
+        </ul>
+      </section>
+
+      <footer class="credit credit-foot">
+        <p>this file created by : Ibrahim Khamiss</p>
+        <p>whatsApp : <a href="https://wa.me/201014778296">+201014778296</a></p>
+      </footer>
+
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
